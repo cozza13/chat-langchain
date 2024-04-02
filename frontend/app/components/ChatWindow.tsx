@@ -220,11 +220,11 @@ export function ChatWindow(props: { conversationId: string }) {
           mb={1}
           color={"white"}
         >
-          Chat with Bitgo Assistant
+          Bitgo
         </Heading>
         {messages.length > 0 ? (
           <Heading fontSize="md" fontWeight={"normal"} mb={1} color={"white"}>
-            We appreciate feedback!
+            
           </Heading>
         ) : (
           <Heading
