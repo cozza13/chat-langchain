@@ -220,7 +220,7 @@ export function ChatWindow(props: { conversationId: string }) {
           mb={1}
           color={"white"}
         >
-          Chat LangChain 🦜🔗
+          Chat with Bitgo Assistant
         </Heading>
         {messages.length > 0 ? (
           <Heading fontSize="md" fontWeight={"normal"} mb={1} color={"white"}>
@@ -234,15 +234,15 @@ export function ChatWindow(props: { conversationId: string }) {
             marginTop={"10px"}
             textAlign={"center"}
           >
-            Ask me anything about LangChain&apos;s{" "}
-            <Link href="https://python.langchain.com/" color={"blue.200"}>
-              Python documentation!
+            Ask me anything {" "}
+            <Link href="https://www.bitgo.com/" color={"blue.200"}>
+              Bitgo!
             </Link>
           </Heading>
         )}
         <div className="text-white flex flex-wrap items-center mt-4">
           <div className="flex items-center mb-2">
-            <span className="shrink-0 mr-2">Powered by</span>
+            <span className="shrink-0 mr-2"></span>
             {llmIsLoading ? (
               <Spinner className="my-2"></Spinner>
             ) : (
@@ -270,7 +270,7 @@ export function ChatWindow(props: { conversationId: string }) {
         className="flex flex-col-reverse w-full mb-2 overflow-auto"
         ref={messageContainerRef}
       >
-        {messages.length > 0 ? (
+        {messages.length > -1 ? (
           [...messages]
             .reverse()
             .map((m, index) => (
@@ -291,7 +291,7 @@ export function ChatWindow(props: { conversationId: string }) {
           value={input}
           maxRows={5}
           marginRight={"56px"}
-          placeholder="What does RunnablePassthrough.assign() do?"
+          placeholder="How to obtain cross-chain unspents in BitGo?"
           textColor={"white"}
           borderColor={"rgb(58, 58, 61)"}
           onChange={(e) => setInput(e.target.value)}
@@ -320,20 +320,7 @@ export function ChatWindow(props: { conversationId: string }) {
         </InputRightElement>
       </InputGroup>
 
-      {messages.length === 0 ? (
-        <footer className="flex justify-center absolute bottom-8">
-          <a
-            href="https://github.com/langchain-ai/chat-langchain"
-            target="_blank"
-            className="text-white flex items-center"
-          >
-            <img src="/images/github-mark.svg" className="h-4 mr-1" />
-            <span>View Source</span>
-          </a>
-        </footer>
-      ) : (
-        ""
-      )}
+      
     </div>
   );
 }

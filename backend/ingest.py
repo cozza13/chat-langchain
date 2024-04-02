@@ -3,7 +3,7 @@ import logging
 import os
 import re
 from parser import langchain_docs_extractor
-
+import yaml
 import weaviate
 from bs4 import BeautifulSoup, SoupStrainer
 from constants import WEAVIATE_DOCS_INDEX_NAME
@@ -14,7 +14,7 @@ from langchain.utils.html import PREFIXES_TO_IGNORE_REGEX, SUFFIXES_TO_IGNORE_RE
 from langchain_community.vectorstores import Weaviate
 from langchain_core.embeddings import Embeddings
 from langchain_openai import OpenAIEmbeddings
-
+from langchain_community.document_loaders.csv_loader import CSVLoader
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -53,7 +53,7 @@ def load_langchain_docs():
 
 def load_langsmith_docs():
     return RecursiveUrlLoader(
-        url="https://docs.smith.langchain.com/",
+        url="https://developers.bitgo.com/",
         max_depth=8,
         extractor=simple_extractor,
         prevent_outside=True,
@@ -71,6 +71,20 @@ def load_langsmith_docs():
 def simple_extractor(html: str) -> str:
     soup = BeautifulSoup(html, "lxml")
     return re.sub(r"\n\n+", "\n\n", soup.text).strip()
+
+
+def csv_metadata_extractor(document):
+    # Assuming the page_content string is YAML-formatted or similarly structured,
+    # you can try to load it as a dictionary.
+    content_dict = yaml.safe_load(document.page_content)
+
+    # Now, you can access external_url, title, and description from the content_dict
+    return {
+        "source": content_dict.get('external_url', ''),
+        "title": content_dict.get('title', ''),
+        "description": content_dict.get('description', ''),
+    }
+
 
 
 def load_api_docs():
@@ -92,6 +106,18 @@ def load_api_docs():
             "https://api.python.langchain.com/en/latest/_modules",
         ),
     ).load()
+
+
+def process_csv_docs():
+    csv_loader = CSVLoader(file_path='backend/docs.csv', source_column="external_url")
+    csv_data = csv_loader.load()
+
+    #processed_docs = []
+    #for row in csv_data:
+    #    metadata = csv_metadata_extractor(row)
+    #    processed_docs.append(metadata)
+
+    return csv_data
 
 
 def ingest_docs():
@@ -120,15 +146,16 @@ def ingest_docs():
     )
     record_manager.create_schema()
 
-    docs_from_documentation = load_langchain_docs()
-    logger.info(f"Loaded {len(docs_from_documentation)} docs from documentation")
-    docs_from_api = load_api_docs()
-    logger.info(f"Loaded {len(docs_from_api)} docs from API")
+    #docs_from_documentation = load_langchain_docs()
+    #logger.info(f"Loaded {len(docs_from_documentation)} docs from documentation")
+    #docs_from_api = load_api_docs()
+    #logger.info(f"Loaded {len(docs_from_api)} docs from API")
     docs_from_langsmith = load_langsmith_docs()
-    logger.info(f"Loaded {len(docs_from_langsmith)} docs from Langsmith")
-
+    #logger.info(f"Loaded {len(docs_from_langsmith)} docs from Langsmith")
+    csv_docs = process_csv_docs()
+    #docs_from_documentation + docs_from_api + docs_from_langsmith + csv_docs
     docs_transformed = text_splitter.split_documents(
-        docs_from_documentation + docs_from_api + docs_from_langsmith
+        csv_docs + docs_from_langsmith
     )
     docs_transformed = [doc for doc in docs_transformed if len(doc.page_content) > 10]
 

@@ -37,7 +37,7 @@ from langsmith import Client
 
 RESPONSE_TEMPLATE = """\
 You are an expert programmer and problem-solver, tasked with answering any question \
-about Langchain.
+about Bitgo.
 
 Generate a comprehensive and informative answer of 80 words or less for the \
 given question based solely on the provided search results (URL and content). You must \
@@ -70,7 +70,7 @@ user.\
 
 COHERE_RESPONSE_TEMPLATE = """\
 You are an expert programmer and problem-solver, tasked with answering any question \
-about Langchain.
+about Bitgo.
 
 Generate a comprehensive and informative answer of 80 words or less for the \
 given question based solely on the provided search results (URL and content). You must \
@@ -238,7 +238,7 @@ def create_chain(llm: LanguageModelLike, retriever: BaseRetriever) -> Runnable:
 
 gpt_3_5 = ChatOpenAI(model="gpt-3.5-turbo-0125", temperature=0, streaming=True)
 claude_3_sonnet = ChatAnthropic(
-    model="claude-3-sonnet-20240229",
+    model="claude-3-opus-20240229",
     temperature=0,
     max_tokens=4096,
     anthropic_api_key=os.environ.get("ANTHROPIC_API_KEY", "not_provided"),
@@ -248,6 +248,12 @@ fireworks_mixtral = ChatFireworks(
     temperature=0,
     max_tokens=16384,
     fireworks_api_key=os.environ.get("FIREWORKS_API_KEY", "not_provided"),
+)
+fireworks_llama = ChatFireworks(
+    model="accounts/fireworks/models/llama-v2-70b-chat",
+    temperature=0,
+    max_tokens=16384,
+    fireworks_api_key=os.environ.get("LLAMA_API_KEY", "not_provided"),
 )
 gemini_pro = ChatGoogleGenerativeAI(
     model="gemini-pro",
