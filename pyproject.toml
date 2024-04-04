@@ -28,6 +28,7 @@ tiktoken = "^0.5.2"
 cohere = "4.45"
 pandas = "^2.2.1"
 pyyaml = "^6.0.1"
+sentence-transformers = "^2.6.1"
 
 
 [tool.poetry.group.lint.dependencies]
